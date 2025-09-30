@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -50,4 +49,3 @@ app.use('/api/products', require('./routes/products')); // <-- Add this line
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
->>>>>>> ffce8cb4cf62ee0a000e380ca04a033bb8b6f2a4
