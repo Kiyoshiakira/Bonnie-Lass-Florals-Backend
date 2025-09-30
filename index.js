@@ -4,9 +4,6 @@ const mongoose = require('mongoose');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Serve static files from the public folder
-app.use(express.static('public'));
-
 // Middleware to parse JSON
 app.use(express.json());
 
