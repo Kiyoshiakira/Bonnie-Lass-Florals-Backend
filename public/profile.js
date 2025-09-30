@@ -1,3 +1,4 @@
+// Wait for DOM
 document.addEventListener('DOMContentLoaded', function() {
   const profileInfo = document.getElementById('profileInfo');
   const userPhoto = document.getElementById('profilePhoto');
