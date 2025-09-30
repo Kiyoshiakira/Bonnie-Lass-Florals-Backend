@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-<<<<<<< HEAD
 // This just saves messages in memory for now.
 // Later, you can email them or save to database.
 let messages = [];
@@ -29,4 +28,3 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router;
->>>>>>> ffce8cb4cf62ee0a000e380ca04a033bb8b6f2a4
