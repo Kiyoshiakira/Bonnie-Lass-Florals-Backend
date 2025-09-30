@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gallery - Bonnie Lass Florals</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="shop.html">Shop</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="contact.html">Contact</a>
+    <a href="cart.html" class="cart-btn">
+      🛒 Cart <span id="cart-count">0</span>
+    </a>
+  </nav>
+  <main>
+    <h1>Gallery</h1>
+    <div class="color-block bg-white instagram-gallery">
+      <blockquote class="instagram-media"
+        data-instgrm-permalink="https://www.instagram.com/bonnielassflorals/?utm_source=ig_embed&amp;utm_campaign=loading"
+        data-instgrm-version="14">
+      </blockquote>
+    </div>
+  </main>
+  <script>
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      document.getElementById('cart-count').textContent = cart.length;
+    }
+    updateCartCount();
+  </script>
+  <script async src="//www.instagram.com/embed.js"></script>
+</body>
+</html>
