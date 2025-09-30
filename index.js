@@ -19,6 +19,8 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/products', require('./routes/products'));
+app.use('/api/orders', require('./routes/orders')); // <-- Add this line
+app.use('/api/messages', require('./routes/messages')); // <-- And this line
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
