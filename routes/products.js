@@ -1,50 +1,49 @@
 const express = require('express');
 const router = express.Router();
-<<<<<<< HEAD
-const Product = require('../models/Product');
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
-
-router.post('/', upload.single('image'), async (req, res) => {
-  try {
-    const { name, description, price } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : '';
-    const product = new Product({ name, description, price, image });
-    await product.save();
-    res.status(201).json(product);
-  } catch (err) {
-    res.status(500).json({ error: 'Upload failed' });
-  }
-});
-
-module.exports = router;
-=======
 const multer = require('multer');
 const Product = require('../models/Product');
 
-// Multer setup: save uploads to /public/uploads
+// Multer setup for image upload
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/uploads/');
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
+  destination: (req, file, cb) => cb(null, 'public/uploads/'),
+  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '_'))
 });
 const upload = multer({ storage });
 
-// POST /api/products - create product with image
 router.post('/', upload.single('image'), async (req, res) => {
   try {
-    const { name, description, price } = req.body;
-    const image = req.file ? '/uploads/' + req.file.filename : '';
-    const product = new Product({ name, description, price, image });
+    const { name, description, price, type, subcategory, stock, options } = req.body;
+    const image = req.file ? `/uploads/${req.file.filename}` : '';
+    const parsedOptions = options ? options.split(',').map(s => s.trim()) : [];
+
+    const product = new Product({
+      name,
+      description,
+      price,
+      image,
+      type,
+      subcategory,
+      stock: parseInt(stock, 10) || 1,
+      options: parsedOptions,
+      featured: false
+    });
+
     await product.save();
-    res.json({ message: "Product uploaded!", product });
+    res.json({ message: 'Product uploaded successfully!', product });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ error: 'Upload failed.' });
+  }
+});
+
+router.get('/', async (req, res) => {
+  // Fetch all products
+  try {
+    const products = await Product.find({});
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch products.' });
   }
 });
 
 module.exports = router;
->>>>>>> ffce8cb4cf62ee0a000e380ca04a033bb8b6f2a4
