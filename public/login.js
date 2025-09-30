@@ -9,7 +9,9 @@ document.getElementById('authForm').addEventListener('submit', async function(e)
 
   // Check if signup or login
   const isSignup = !document.getElementById('signupFields').classList.contains('hidden');
-  const endpoint = isSignup ? '/api/auth/signup' : '/api/auth/login';
+  // UPDATED: Use full Render API URL
+  const apiBase = 'https://bonnie-lass-florals.onrender.com';
+  const endpoint = isSignup ? `${apiBase}/api/auth/signup` : `${apiBase}/api/auth/login`;
   const body = isSignup ? { email, password, name } : { email, password };
 
   try {
