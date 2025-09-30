@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+<<<<<<< HEAD
 // This just saves messages in memory for now.
 // Later, you can email them or save to database.
 let messages = [];
@@ -15,3 +16,17 @@ router.post('/', (req, res) => {
 });
 
 module.exports = router;
+=======
+// Simple contact POST handler
+router.post('/', async (req, res) => {
+  try {
+    // Here you would send an email or store the message
+    // For now, just echo success
+    res.json({ message: "Thank you for contacting us!" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to send message." });
+  }
+});
+
+module.exports = router;
+>>>>>>> ffce8cb4cf62ee0a000e380ca04a033bb8b6f2a4
