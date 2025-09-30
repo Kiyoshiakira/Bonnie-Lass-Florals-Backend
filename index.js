@@ -16,9 +16,14 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/products', require('./routes/products'));
-app.use('/api/orders', require('./routes/orders')); // <-- Add this line
-app.use('/api/messages', require('./routes/messages')); // <-- And this line
-app.use('/api/payments', require('./routes/payments')); // <-- ADD THIS LINE
+app.use('/api/orders', require('./routes/orders'));
+app.use('/api/messages', require('./routes/messages'));
+app.use('/api/payments', require('./routes/payments'));
+
+// Optional: catch-all for any non-API requests
+app.use((req, res) => {
+  res.status(404).json({ error: 'API only' });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
