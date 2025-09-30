@@ -21,6 +21,8 @@
       };
       firebase.initializeApp(firebaseConfig);
     </script>
+    <!-- Square Web Payments SDK (sandbox for testing) -->
+    <script type="text/javascript" src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
 </head>
 <body>
   <nav>
@@ -50,15 +52,15 @@
       <input type="text" name="country" required>
       <div>
         <strong>Payment Method:</strong><br>
-        <label><input type="radio" name="paymentMethod" value="square" checked> Credit/Debit Card (Square)</label><br>
-        <label><input type="radio" name="paymentMethod" value="paypal"> PayPal</label>
+        <label><input type="radio" name="paymentMethod" value="square" checked> Credit/Debit Card (Square)</label>
       </div>
       <div id="squarePaymentForm" style="margin:1em 0;"></div>
-      <div id="paypalButtonContainer" style="margin:1em 0;"></div>
       <button type="submit" id="payNowBtn">Pay Now</button>
     </form>
     <div id="checkoutStatus" style="margin-top:2em;"></div>
-    <div id="guestCheckoutNote" style="color:#d946ef; margin-top:2em;">You may check out as a guest, but registered users can track their orders and receive exclusive offers.</div>
+    <div id="guestCheckoutNote" style="color:#d946ef; margin-top:2em;">
+      You may check out as a guest, but registered users can track their orders and receive exclusive offers.
+    </div>
   </main>
   <script src="checkout.js"></script>
 </body>
