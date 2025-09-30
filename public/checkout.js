@@ -1,5 +1,5 @@
 // Replace these with your real Square values from developer dashboard
-const SQUARE_APP_ID = 'REPLACE_WITH_YOUR_SQUARE_APP_ID';
+const SQUARE_APP_ID = 'sandbox-sq0idb-9IASKSDHt5w_okrcNYzfEA';
 const SQUARE_LOCATION_ID = 'REPLACE_WITH_YOUR_LOCATION_ID';
 
 let payments, card;
