@@ -12,7 +12,6 @@ function updateCartCount() {
   const countElem = document.getElementById('cart-count');
   if (countElem) countElem.textContent = cart.length;
 }
-=======
 function getCart() {
   return JSON.parse(localStorage.getItem('cart')) || [];
 }
