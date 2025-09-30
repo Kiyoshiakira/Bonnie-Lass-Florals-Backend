@@ -17,12 +17,14 @@
         <a href="upload.html">Upload</a>
     </nav>
     <main>
-        <h2>Upload New Creation</h2>
-        <form id="uploadForm" enctype="multipart/form-data" method="POST" action="/api/products">
-            <input name="name" type="text" placeholder="Name" required>
-            <textarea name="description" placeholder="Description"></textarea>
-            <input name="price" type="number" step="0.01" placeholder="Price" required>
-            <label for="type">Product Type:</label>
+        <h2>Upload New Item</h2>
+            <form id="uploadForm" enctype="multipart/form-data" method="POST" action="/api/products">
+                <input name="name" type="text" placeholder="Name" required>
+                <textarea name="description" placeholder="Description"></textarea>
+                <input name="price" type="number" step="0.01" placeholder="Price" required>
+                <input name="stock" type="number" min="1" placeholder="Stock Amount" required>
+                <input name="options" type="text" placeholder="Options (comma separated, e.g. Small,Medium,Large)">
+                <label for="type">Product Type:</label>
             <select name="type" id="type" required>
                 <option value="">Select Type</option>
                 <option value="decor">Decor</option>
