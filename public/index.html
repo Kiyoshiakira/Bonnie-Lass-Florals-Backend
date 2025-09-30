@@ -144,7 +144,7 @@
       // Show user info and role
       function handleLogin(user) {
         // Set admin if email matches (case-insensitive)
-        const admins = ["your@email.com", "mom@email.com"];
+        const admins = ["shaunessy24@gmail.com", "bonnielassflorals@gmail.com"];
         let role = admins.includes(user.email.toLowerCase()) ? "Admin" : "Customer";
         userInfo.textContent = `Logged in as: ${user.displayName || user.email} (${role})`;
         loginBtn.textContent = "Profile";
