@@ -12,6 +12,12 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error(err));
 
+const cors = require('cors');
+app.use(cors({
+  origin: 'https://bonnielassflorals.com', // your real site
+  credentials: true
+}));
+
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/contact', require('./routes/contact'));
