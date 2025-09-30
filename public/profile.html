@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Profile - Bonnie Lass Florals</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-    <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyBo4GNnJd8awnviuIlo9mJ9vaar8jvf6G0",
-        authDomain: "bonnie-lass-florals.firebaseapp.com",
-        projectId: "bonnie-lass-florals",
-        storageBucket: "bonnie-lass-florals.firebasestorage.app",
-        messagingSenderId: "1009091302977",
-        appId: "1:1009091302977:web:2322ff602eccee4509d8c0",
-        measurementId: "G-DQRB98D0WY"
-      };
-      firebase.initializeApp(firebaseConfig);
-    </script>
+  <meta charset="UTF-8">
+  <title>Your Profile - Bonnie Lass Florals</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBo4GNnJd8awnviuIlo9mJ9vaar8jvf6G0",
+      authDomain: "bonnie-lass-florals.firebaseapp.com",
+      projectId: "bonnie-lass-florals",
+      storageBucket: "bonnie-lass-florals.firebasestorage.app",
+      messagingSenderId: "1009091302977",
+      appId: "1:1009091302977:web:2322ff602eccee4509d8c0",
+      measurementId: "G-DQRB98D0WY"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
 </head>
 <body>
   <nav>
@@ -29,120 +28,25 @@
     <a href="shop.html">Shop</a>
     <a href="gallery.html">Gallery</a>
     <a href="contact.html">Contact</a>
-    <a href="cart.html" class="cart-btn">🛒 Cart <span id="cart-count">0</span></a>
-    <a href="profile.html" class="cart-btn">Profile</a>
+    <a href="cart.html" class="cart-btn">
+      🛒 Cart <span id="cart-count">0</span>
+    </a>
   </nav>
   <main>
     <h1>Your Profile</h1>
-    <div id="userInfo"></div>
-    <button id="logoutBtn">Logout</button>
-    <section>
-      <h2>Purchase History</h2>
-      <div id="orders"></div>
-    </section>
-    <section>
-      <h2>Message History</h2>
-      <div id="messages"></div>
-    </section>
-    <section id="adminSection" style="display:none;">
-      <h2>Admin Features</h2>
-      <a href="admin/upload.html"><button>Upload New Product</button></a>
-      <a href="admin/orders.html"><button>View All Orders</button></a>
-      <a href="admin/users.html"><button>View All Users</button></a>
-    </section>
+    <div id="profileInfo" style="display:none; text-align:center;">
+      <img id="profilePhoto" src="img/default-avatar.png" alt="Profile Photo" style="width:90px; height:90px; border-radius:50%; margin-bottom:1em;">
+      <div id="profileName" style="font-size:1.2em; font-weight:bold;"></div>
+      <div id="profileEmail" style="color:#d946ef; margin-bottom:0.7em;"></div>
+      <div>
+        <span style="font-weight:bold;">Role:</span> <span id="profileRole"></span>
+      </div>
+    </div>
+    <div id="orderHistory"></div>
+    <div id="guestPrompt" style="display:none; text-align:center; color:#d946ef; margin-top:2em;">
+      <p><strong>Please <a href="#" onclick="window.location='index.html'">log in</a> to see your profile and order history.</strong></p>
+    </div>
   </main>
-  <script>
-    function updateCartCount() {
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      document.querySelectorAll('.cart-btn span').forEach(el => el.textContent = cart.length);
-    }
-    updateCartCount();
-
-    // Display user profile info
-    firebase.auth().onAuthStateChanged(async function(user) {
-      const userInfoDiv = document.getElementById('userInfo');
-      if (user) {
-        const userEmail = user.email;
-        const userName = user.displayName || user.email;
-        const admins = ["shaunessy24@gmail.com","bonnielassflorals@gmail.com"];
-        const role = admins.includes(userEmail.toLowerCase()) ? "Admin" : "Customer";
-        userInfoDiv.innerHTML = `
-          <strong>Name:</strong> ${userName}<br>
-          <strong>Email:</strong> ${userEmail}<br>
-          <strong>Role:</strong> ${role}
-        `;
-        if (role === "Admin") document.getElementById('adminSection').style.display = "block";
-        fetchOrders(userEmail);
-        fetchMessages(userEmail);
-      } else {
-        userInfoDiv.innerHTML = '<em>You are not logged in.</em>';
-        document.getElementById('orders').innerHTML = '';
-        document.getElementById('messages').innerHTML = '';
-        document.getElementById('adminSection').style.display = "none";
-      }
-    });
-
-    // Logout
-    document.getElementById('logoutBtn').onclick = async function() {
-      await firebase.auth().signOut();
-      window.location.href = "index.html";
-    };
-
-    // Fetch purchase history from backend
-    async function fetchOrders(email) {
-      try {
-        const res = await fetch(`/api/orders/mine?email=${encodeURIComponent(email)}`);
-        if (!res.ok) throw new Error("Could not fetch orders");
-        const orders = await res.json();
-        if (orders.length === 0) {
-          document.getElementById('orders').innerHTML = "<em>No orders found.</em>";
-        } else {
-          document.getElementById('orders').innerHTML = orders.map(orderToCard).join('');
-        }
-      } catch (err) {
-        document.getElementById('orders').innerHTML = "<em>Error loading orders.</em>";
-      }
-    }
-
-    function orderToCard(order) {
-      return `
-        <div class="color-block bg-gray" style="margin-bottom:1em;">
-          <strong>Order #: </strong>${order._id}<br>
-          <strong>Date:</strong> ${new Date(order.createdAt).toLocaleDateString()}<br>
-          <strong>Status:</strong> ${order.status}<br>
-          <strong>Total:</strong> $${order.total}<br>
-          <strong>Items:</strong>
-          <ul>
-            ${order.items.map(item => `<li>${item.product.name} x${item.quantity}</li>`).join('')}
-          </ul>
-        </div>
-      `;
-    }
-
-    // Fetch message history from backend (if you store messages)
-    async function fetchMessages(email) {
-      try {
-        const res = await fetch(`/api/messages/mine?email=${encodeURIComponent(email)}`);
-        if (!res.ok) throw new Error("Could not fetch messages");
-        const messages = await res.json();
-        if (messages.length === 0) {
-          document.getElementById('messages').innerHTML = "<em>No messages found.</em>";
-        } else {
-          document.getElementById('messages').innerHTML = messages.map(msgToCard).join('');
-        }
-      } catch (err) {
-        document.getElementById('messages').innerHTML = "<em>Error loading messages.</em>";
-      }
-    }
-
-    function msgToCard(msg) {
-      return `
-        <div class="color-block bg-pink" style="margin-bottom:1em;">
-          <strong>Date:</strong> ${new Date(msg.createdAt).toLocaleDateString()}<br>
-          <strong>Message:</strong> ${msg.message}
-        </div>
-      `;
-    }
-  </script>
+  <script src="profile.js"></script>
 </body>
 </html>
