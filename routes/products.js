@@ -5,7 +5,8 @@ const Product = require('../models/Product');
 
 // Multer setup for image upload
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'public/uploads/'),
+  // Change destination to public/admin/uploads/
+  destination: (req, file, cb) => cb(null, 'public/admin/uploads/'),
   filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '_'))
 });
 const upload = multer({ storage });
@@ -13,7 +14,8 @@ const upload = multer({ storage });
 router.post('/', upload.single('image'), async (req, res) => {
   try {
     const { name, description, price, type, subcategory, stock, options } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : '';
+    // Update image path for admin uploads
+    const image = req.file ? `/admin/uploads/${req.file.filename}` : '';
     const parsedOptions = options ? options.split(',').map(s => s.trim()) : [];
 
     const product = new Product({
@@ -36,8 +38,8 @@ router.post('/', upload.single('image'), async (req, res) => {
   }
 });
 
+// GET /api/products - fetch all products
 router.get('/', async (req, res) => {
-  // Fetch all products
   try {
     const products = await Product.find({});
     res.json(products);
