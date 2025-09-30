@@ -4,31 +4,10 @@
   <meta charset="UTF-8">
   <title>Shop - Bonnie Lass Florals</title>
   <link rel="stylesheet" href="styles.css">
-<<<<<<< HEAD
-</head>
-<body>
-    <nav>
-		<a href="index.html">Home</a>
-		<a href="about.html">About</a>
-		<a href="shop.html">Shop</a>
-		<a href="gallery.html">Gallery</a>
-		<a href="contact.html">Contact</a>
-		<a href="cart.html" class="cart-btn">
-		  🛒 Cart <span id="cart-count">0</span>
-    </a>
-	</nav>
-  <main>
-    <h1>Shop</h1>
-    <div id="products"></div>
-  </main>
-  <script src="shop.js"></script>
-</body>
-</html>
-=======
   <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBo4GNnJd8awnviuIlo9mJ9vaar8jvf6G0",
@@ -96,7 +75,8 @@
       <p class="disclaimer" style="color: #d946ef; font-weight: bold; margin-top:1rem;">
         All food products sold here are homemade and produced in a kitchen that has not been inspected by the Iowa Department of Inspections and Appeals.<br>
         <span style="font-size:0.98em; color:#d946ef;">
-          Direct-to-consumer only. For additional information, see <a href="https://dia.iowa.gov/food-health/cottage-food" target="_blank" style="color:#a21caf;">Iowa Cottage Food Law</a>.
+          Direct-to-consumer only. <strong>Cottage food items can only be shipped to addresses within Iowa.</strong> For additional information, see
+          <a href="https://dia.iowa.gov/food-health/cottage-food" target="_blank" style="color:#a21caf;">Iowa Cottage Food Law</a>.
         </span>
       </p>
       <div id="food-products"></div>
@@ -117,43 +97,32 @@
       }
     }
 
-    // You can now fetch products and filter them by type
-    // Example static render for demonstration:
-    document.addEventListener('DOMContentLoaded', function() {
-      // Demo decor products
-      document.getElementById('decor-products').innerHTML = `
+    // Load products dynamically from backend
+    async function loadProducts() {
+      const res = await fetch('/api/products');
+      const products = await res.json();
+      const decor = products.filter(p => p.type === 'decor');
+      const food = products.filter(p => p.type === 'food');
+      document.getElementById('decor-products').innerHTML = decor.map(productToCard).join('');
+      document.getElementById('food-products').innerHTML = food.map(productToCard).join('');
+    }
+
+    function productToCard(p) {
+      return `
         <div class="product-card">
-          <img src="img/sample-floral.jpg" alt="Floral Arrangement" class="product-img"/>
-          <div class="product-title">Elegant Red Faux Floral Arrangement</div>
-          <div class="product-price">$125.00</div>
-          <button onclick="addToCart({name: 'Elegant Red Faux Floral Arrangement', price: 125})">Add to Cart</button>
-        </div>
-        <div class="product-card">
-          <img src="img/sample-wreath.jpg" alt="Wreath Decor" class="product-img"/>
-          <div class="product-title">Spring Wreath</div>
-          <div class="product-price">$60.00</div>
-          <button onclick="addToCart({name: 'Spring Wreath', price: 60})">Add to Cart</button>
-        </div>
-      `;
-      // Demo food products
-      document.getElementById('food-products').innerHTML = `
-        <div class="product-card">
-          <img src="img/sample-sauce.jpg" alt="Homemade Sauce" class="product-img"/>
-          <div class="product-title">Homemade Spicy Tomato Sauce</div>
-          <div class="product-price">$8.00</div>
-          <button onclick="addToCart({name: 'Homemade Spicy Tomato Sauce', price: 8})">Add to Cart</button>
-        </div>
-        <div class="product-card">
-          <img src="img/sample-jam.jpg" alt="Jam" class="product-img"/>
-          <div class="product-title">Strawberry Jam</div>
-          <div class="product-price">$6.00</div>
-          <button onclick="addToCart({name: 'Strawberry Jam', price: 6})">Add to Cart</button>
+          <img src="${p.image}" alt="${p.name}" class="product-img"/>
+          <div class="product-title">${p.name}</div>
+          <div class="product-price">$${p.price && !isNaN(p.price) ? Number(p.price).toFixed(2) : ''}</div>
+          <div class="product-stock">Stock: ${p.stock !== undefined ? p.stock : 'N/A'}</div>
+          ${p.options && p.options.length ? `<div><strong>Options:</strong> ${p.options.join(', ')}</div>` : ''}
+          <div class="product-desc">${p.description || ''}</div>
+          <button onclick='addToCart(${JSON.stringify({name: p.name, price: p.price, id: p._id})})'>Add to Cart</button>
         </div>
       `;
-    });
-    // AddToCart function assumes you have cart.js loaded
+    }
+
+    document.addEventListener('DOMContentLoaded', loadProducts);
   </script>
   <script src="cart.js"></script>
 </body>
 </html>
->>>>>>> ffce8cb4cf62ee0a000e380ca04a033bb8b6f2a4
