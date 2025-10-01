@@ -1,29 +1,48 @@
 const express = require('express');
 const router = express.Router();
-const Stripe = require('stripe');
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+const { Client, Environment } = require('square');
+const Order = require('../models/Order');
 
-router.post('/create-checkout-session', async (req, res) => {
-  const { price, productName } = req.body;
+const squareClient = new Client({
+  accessToken: process.env.SQUARE_ACCESS_TOKEN,
+  environment: process.env.NODE_ENV === 'production' ? Environment.Production : Environment.Sandbox,
+});
 
+router.post('/square', async (req, res) => {
+  const { sourceId, shippingAddress, items, total } = req.body;
+  if (!sourceId || !items || !Array.isArray(items) || !shippingAddress) {
+    return res.status(400).json({ error: "Missing required fields." });
+  }
+  const amountCents = Math.round(Number(total) * 100);
   try {
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [{
-        price_data: {
-          currency: 'usd',
-          product_data: { name: productName },
-          unit_amount: price * 100, // Stripe expects the amount in cents
-        },
-        quantity: 1,
-      }],
-      mode: 'payment',
-      success_url: 'http://localhost:5000/success.html',
-      cancel_url: 'http://localhost:5000/cancel.html',
+    const paymentsApi = squareClient.paymentsApi;
+    const paymentResponse = await paymentsApi.createPayment({
+      sourceId,
+      idempotencyKey: require('crypto').randomBytes(12).toString('hex'),
+      amountMoney: {
+        amount: amountCents,
+        currency: 'USD'
+      }
     });
-    res.json({ url: session.url });
+    if (paymentResponse.result.payment.status !== "COMPLETED") {
+      return res.status(402).json({ error: "Payment failed.", details: paymentResponse.result });
+    }
+    // Create order in DB
+    const order = await Order.create({
+      items,
+      total,
+      shippingAddress,
+      status: 'Processing',
+      payment: {
+        method: 'square',
+        status: 'paid',
+        transactionId: paymentResponse.result.payment.id
+      }
+    });
+    res.json({ message: "Payment successful and order created!", orderId: order._id });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Square payment error:", err);
+    res.status(500).json({ error: "Payment processing error.", details: err.message || err });
   }
 });
 

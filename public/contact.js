@@ -6,7 +6,8 @@ document.getElementById('contactForm').addEventListener('submit', async function
   const message = e.target.querySelector('textarea[name="message"]').value;
 
   try {
-    const res = await fetch('/api/contact', {
+    // UPDATED: Use full Render API URL
+    const res = await fetch('https://bonnie-lass-florals.onrender.com/api/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, message })

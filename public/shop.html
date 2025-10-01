@@ -99,7 +99,8 @@
 
     // Load products dynamically from backend
     async function loadProducts() {
-      const res = await fetch('/api/products');
+      // UPDATED: Use full Render API URL
+      const res = await fetch('https://bonnie-lass-florals.onrender.com/api/products');
       const products = await res.json();
       const decor = products.filter(p => p.type === 'decor');
       const food = products.filter(p => p.type === 'food');
